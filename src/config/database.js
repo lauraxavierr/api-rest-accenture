@@ -1,13 +1,16 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 module.exports = {
     dialect: 'postgres',
-    host: 'chunee.db.elephantsql.com',
-    username: 'chdbadri',
-    password: 'o5qJrPHlWEN95J2sjFieVijsb_98XS1h',
-    database: 'chdbadri',
+    host: process.env.HOST,
+    username: process.env.DATABASE,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
     define: {
 	timeStamps: true,
 	underscored: true,
 	underscoredAll: true
     }
-
 }
