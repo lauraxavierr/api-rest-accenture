@@ -10,7 +10,7 @@ routes.post('/signup', UserController.store);
 
 routes.post('/signin', SessionController.store);
 
-routes.get('/users/:user_id', authMiddleware, UserController.index)
+routes.get('/users/:user_id', authMiddleware, UserController.index);
 
 
 export default routes;
