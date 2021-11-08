@@ -1,11 +1,24 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import * as Yup from 'yup';
 
 import User from '../models/User';
-import authConfig from '../../config/auth';
 
+dotenv.config();
 class SessionController{
 	async store(req, res){
+		const schema = Yup.object().shape({
+			email: Yup.string().email().required(),
+			senha: Yup.string().required().min(6)
+		});
+
 		const { email, senha } = req.body;
+
+		if (!(await schema.isValid(req.body))) {
+			return res.status(401).json({
+				message: 'Dados inválidos'
+			});
+		}
 
 		const user = await User.findOne({
 			where: { email }
@@ -30,15 +43,12 @@ class SessionController{
 		var dateExpiresIn = new Date();
 		dateExpiresIn.setHours(dateExpiresIn.getHours());
 
-		var token = jwt.sign({id, nome,email}, authConfig.secret, {
-			expiresIn: authConfig.expiresIn,
+		var token = jwt.sign({id, nome,email}, process.env.SECRET, {
+			expiresIn: process.env.EXPIRESIN,
 		});
 
 		var expiresIn = dateExpiresIn;
 		expiresIn.setMinutes(expiresIn.getMinutes() + 30);
-
-		console.log('agora', dateNow);
-		console.log('jaja', expiresIn);
 
 
 		const updateValues = await User.update({token: token, data_atualizacao: dateNow.toUTCString(), ultimo_login: dateNow.toUTCString(), expira_login: expiresIn.toUTCString()},{

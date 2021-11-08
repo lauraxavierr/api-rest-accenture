@@ -1,7 +1,7 @@
 import verify from 'jsonwebtoken/verify';
+import dotenv from 'dotenv';
 
-
-import authConfig from '../../config/auth';
+dotenv.config();
 
 export default async (req, res, next) => {
 	const authToken = req.headers.authorization;
@@ -13,7 +13,7 @@ export default async (req, res, next) => {
 	const [ , token ] = authToken.split(' '); //Remove o Bearer
 
 	try {
-		verify(token, authConfig.secret);
+		verify(token, process.env.SECRET);
 		return next();
     
 	} catch (err) {

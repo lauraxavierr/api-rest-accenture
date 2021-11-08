@@ -10,16 +10,18 @@
 
 O objetivo dessa aplicação é expor uma API RESTful de sign up/sign in.
 
-Este projeto foi criado para o processo seletivo na Accenture.
+Este projeto foi criado para o processo seletivo da Accenture.
 
 
 Pacotes principais:
 - Express para criação das rotas e inicio dos server.
 - JWT para persistência do token por 30 minutos.
-- Elephantsql para utilização do banco de dados NoSQL (MongoDB)
-- Eslint para realização de testes unitários.
+- Elephantsql para utilização do banco de dados NoSQL (MongoDB).
+- Eslint para realização de testes.
 
 ## Instalação
+
+Este projeto foi desenvolvido com a versão 14.7.4 do Nodejs.
 
 Deve-se configurar as variável de ambiente .env
 
@@ -28,6 +30,10 @@ Exemplo:
 ```
 SECRET=XXXX
 EXPIRESIN='30m'
+
+DATABASE=teste
+HOST=teste.db.elephantsql.com
+PASSWORD=ahsgdhagdjad
 ```
 
 Deve-se instalar as dependência utilizando:
@@ -163,4 +169,5 @@ Caso o token esteja expirado
 
 
 ## Test
-
+Os testes foram realizados utilizando o Eslint.
+O arquivo pode ser encontrado em -> .eslintrc.json
