@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
 import authConfig from '../../config/auth';
-import { date } from 'yup/lib/locale';
 
 class SessionController{
   async store(req, res){
@@ -12,12 +11,14 @@ class SessionController{
       where: { email }
     });
 
+    // Verifica se o e-mail informado existe
     if(!user){
       return res.status(401).json({ message: 'Usuário e/ou senha inválidos'});
     };
 
+    // Retorna o e-mail informado e verifica se a senha está incorreta
     if(!(await user.checkPassword(senha))){
-      return res.status(401).json({ message: 'Senha incorreta.'});
+      return res.status(401).json({ message: 'Usuário e/ou senha inválidos'});
     };
 
     const { id, nome} = User.findOne({ where: { email: req.body.email }});
@@ -28,7 +29,6 @@ class SessionController{
 
     var dateExpiresIn = new Date();
     dateExpiresIn.setHours(dateExpiresIn.getHours());
-
 
     var token = jwt.sign({id, nome,email}, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
@@ -41,7 +41,7 @@ class SessionController{
     console.log('jaja', expiresIn)
 
 
-    const updateValues = await User.update({token: token, ultimo_login: dateNow.toUTCString(), expira_login: expiresIn.toUTCString()},{
+    const updateValues = await User.update({token: token, data_atualizacao: dateNow.toUTCString(), ultimo_login: dateNow.toUTCString(), expira_login: expiresIn.toUTCString()},{
       where: {
         id: checkValues['dataValues']['id']}
     });
@@ -58,7 +58,7 @@ class SessionController{
         senha: checkValues['dataValues']['senha'],
         telefone: checkValues['dataValues']['telefone'],
         data_criacao: checkValues['dataValues']['createdAt'],
-        data_atualizacao: checkValues['dataValues']['updatedAt'],
+        data_atualizacao: dateNow,
         ultimo_login: dateNow,
         token: token
       }
