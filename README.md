@@ -1,48 +1,166 @@
-npm i nodemon -D -> responsável por atualizar o server a cada vez que salvo o projeto. (Amb Dev)
+# API RESTful Sign in/Sign up
 
-npm i nodemon -> responsável por colocar o projeto em produção.
+## Sumário
+1. [Introdução](#Introdução)
+2. [Instalação](#Instalação)
+3. [Rotas](#Rotas)
+4. [Teste](#Test)
 
- "build": "sucrase ./src -d ./build --transforms imports",
-    "dev": "nodemon src/server.js"
+## Introdução
 
-npm run dev -> inicia o projeto.
+O objetivo dessa aplicação é expor uma API RESTful de sign up/sign in.
+
+Este projeto foi criado para o processo seletivo na Accenture.
 
 
-instalações:
-axios;
-sucrase; -> pega em um formato e converte para a versão do navegador.
+Pacotes principais:
+- Express para criação das rotas e inicio dos server.
+- JWT para persistência do token por 30 minutos.
+- Elephantsql para utilização do banco de dados NoSQL (MongoDB)
+- Eslint para realização de testes unitários.
 
-"build": "sucrase ./src -d ./build --transforms imports", -> cria "builders" para os projetos.
+## Instalação
 
-Sequelize -> conexão com ORM
-Sequelize cli -> para passar instruções
+Deve-se configurar as variável de ambiente .env
 
-Pacotes para utilizar o banco de dados:
-* npm i 
-* npm i sequelize-cli -D
-* npm i sequelize
-* npm install pg --save
-* npm i pg-hstore //Instala o drive do postgree
-* npm i yup
-* npm i date-fns
+Exemplo: 
 
-Conectando ao banco de dados:
-* yarn sequelize migration:create --name=users_accenture // Cria o banco
-* yarn sequelize db:migrate                   // Executa o banco 
+```
+SECRET=XXXX
+EXPIRESIN='30m'
+```
 
-Utilizamos https://www.md5hashgenerator.com/ para gerar um token -> CODIFICAR.
+Deve-se instalar as dependência utilizando:
+```
+npm install ou npm i
+```
 
-https://jwt.io/ decodificar esse token.
+Para iniciar aplicação: 
+```
+npm run dev
+```
 
-Criar Bearer no postman.
+## Rotas/Endpoints
 
-Um deploy da integração foi realizado no Heroku.
-https://dashboard.heroku.com/terms-of-service
+### Sign up
+POST http://localhost:5000/signup
 
-* Criação de arquivo -> ProcFile
 
-Comandos:
-* npm run build start
-* rm -rf build  //Apagar um arquivo
+```java
+{
+   "nome": "Laura Xavier",
+   "email": "lauraxavier@teste.com.br",
+   "senha": "123456",
+   "telefone": "985789987"
+}
+```
 
-Após isso, configurar o projeto no Heroku e conectar com o GitHub.
+Exemplo de retorno com status 200
+```java
+{
+"user": {
+    "id": 1,
+    "nome": "Laura Xavier",
+    "email": "lauraxavier@teste.com.br",
+    "senha": "$2a$10$mMSoaR65d/eZRP9HkD/5PeQdC9BxXYoAUFVP/KzGELj6uaasfghj",
+    "telefone": "985789987",
+    "data_criacao": "2021-11-08T19:43:02.861Z",
+    "data_atualizacao": "2021-11-08T19:43:02.861Z",
+    "ultimo_login": "2021-11-08T19:43:02.861Z"
+    }
+}
+```
+
+Exemplo de retorno com status 401
+```java
+{
+    "message": "E-mail já existente"
+}
+```
+-----
+
+### Sign in
+POST http://localhost:5000/signin
+
+```java
+{
+   "email": "lauraxavier@teste.com.br",
+   "senha": "123456"
+}
+```
+
+Exemplo de retorno com status 200
+```java
+{
+{
+"user": {
+    "id": 1,
+    "nome": "Laura Xavier",
+    "email": "lauraxavier@teste.com.br",
+    "senha": "$2a$10$mMSoaR65d/eZRP9HkD/5PeQdC9BxXYoAUFVP/KzGELj6uaasfghj",
+    "telefone": "985789987",
+    "data_criacao": "2021-11-08T19:43:02.861Z",
+    "data_atualizacao": "2021-11-08T19:46:07.690Z",
+    "ultimo_login": "2021-11-08T19:46:07.690Z",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsMTA0MjE3MkB0ZXN0ZUFnZW5kYW1lbnRvLmNvbS5iciIsImlhdCI6MTYzNjQwMDc2NywiZXhwIjoxNjM2NDg3MTY3fQ.NFBnKNJB2xuqMJLlADJ1pkN2saSqbzDe5RKtkKIcl5e"
+    }
+}
+}
+```
+
+Exemplo de retorno com status 401
+```java
+{
+    "message": "Usuário e/ou senha inválidos"
+}
+```
+-----
+
+### Buscar Usuário
+GET http://localhost:5000/users/:user_id
+
+Exemplo
+```java
+
+"http://localhost:5000/users/:1"
+
+```
+
+**Observação:** será necessário preencher o user_id com o usuário do cliente que deseja obter as informações.
+Também será preciso passar no header o parâmento authentication, utilizando a opção Token Bearer.
+O user_id e token foram retornados na rota de sign-in. 
+
+
+Exemplo de retorno com status 200
+```java
+{
+"user": {
+    "id": 1,
+    "nome": "Laura Xavier",
+    "email": "lauraxavier@teste.com.br",
+    "senha": "$2a$10$mMSoaR65d/eZRP9HkD/5PeQdC9BxXYoAUFVP/KzGELj6uaasfghj",
+    "telefone": "985789987",
+    "data_criacao": "2021-11-08T19:43:02.861Z",
+    "data_atualizacao": "2021-11-08T19:46:07.690Z",
+    "ultimo_login": "2021-11-08T19:46:07.690Z"
+    }
+}
+```
+
+Exemplo de retorno com status 401
+```java
+{
+    "message": "Não autorizado"
+}
+```
+
+Caso o token esteja expirado
+```java
+{
+    "message": "Sessão inválida"
+}
+```
+
+
+## Test
+
