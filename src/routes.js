@@ -9,7 +9,6 @@ const routes = new Router();
 routes.post('/signup', UserController.store); 
 
 routes.post('/signin', SessionController.store);
-routes.post('/session', SessionController.store);
 
 routes.get('/users/:user_id', authMiddleware, UserController.index)
 
