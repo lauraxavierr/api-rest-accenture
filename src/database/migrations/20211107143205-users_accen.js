@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
- return queryInterface.createTable('users-accen', {
+ return queryInterface.createTable('users', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -22,6 +22,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       telefone: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -30,11 +38,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      created_at: {
+      ultimo_login: {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      updated_at: {
+      expira_login: {
         type: Sequelize.DATE,
         allowNull: false,
       },

@@ -9,7 +9,7 @@ class App {
 	this.routes();
     }
 
-    //Mediação: recebe um valor e passa para outro projeto.
+
     middleware(){
 	this.server.use(express.json());
     }
@@ -19,5 +19,5 @@ class App {
     }
 }
 
-//Estou exportando o tudo o que está dentro da classe.
+
 export default new App().server;

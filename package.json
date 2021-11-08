@@ -1,7 +1,7 @@
 {
-  "name": "luizacodenodejs",
+  "name": "api-rest-accenture",
   "version": "1.0.0",
-  "description": "npm i nodemon -D -> responsável por atualizar o server a cada vez que salvo o projeto. (Amb Dev)",
+  "description": "npm i nodemon -D",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
